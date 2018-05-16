@@ -71,8 +71,9 @@ class MazeGui:
             self.maze_grid.tag_raise('grid_line')
 
     def update_toggle_pos(self, event):
-        """Updates the toggle_pos attribute if the coordinate changes while the
-        mouse button1 is pressed. Bind of <B1-Motion> event.
+        """Updates the toggle_pos attribute and calls toggle_tile function if
+        the coordinate changes while the mouse button1 is pressed. Bind of
+        <B1-Motion> event.
 
         Args:
             event: The event object of the bind
