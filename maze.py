@@ -13,10 +13,10 @@ class MazeGui:
         self.tile_side = 50
         self.num_tiles = 15
         self.tiles = {}
-        self.maze_dim = self.num_tiles * self.tile_side + self.line_width
+        self.maze_dim = self.num_tiles * self.tile_side
         self.toggle_pos = None
         self.maze_grid = tk.Canvas(self.master, width=self.maze_dim, height=self.maze_dim,
-                bg='white')
+                bg='white', highlightthickness=self.line_width, highlightbackground='black')
 
         # Functions calls
         self.maze_grid.pack()
@@ -32,11 +32,11 @@ class MazeGui:
         """Draws the grid lines on the maze_grid canvas.
         """
         self.maze_grid.delete('grid_line')
-        for px in range(self.line_width, self.maze_dim+1, self.tile_side):
-            self.maze_grid.create_line((px, 0), (px, self.maze_dim), width=self.line_width,
-                    tag='grid_line')
-            self.maze_grid.create_line((0, px), (self.maze_dim, px), width=self.line_width,
-                    tag='grid_line')
+        for px in range(self.tile_side+self.line_width, self.maze_dim, self.tile_side):
+            self.maze_grid.create_line((px, 0), (px, self.maze_dim+self.line_width),
+                    width=self.line_width, tag='grid_line')
+            self.maze_grid.create_line((0, px), (self.maze_dim+self.line_width, px),
+                    width=self.line_width, tag='grid_line')
 
     # TODO
     def build_empty_maze(self):
