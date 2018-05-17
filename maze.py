@@ -43,8 +43,10 @@ class MazeGui:
         sqr_size = self.tile_side + (2*self.line_width)
         for px0 in range(0, self.maze_dim+1, self.tile_side):
             px1 = px0 + sqr_size
-            self.maze_grid.create_rectangle((px0, 0), (px1, sqr_size), fill='red', outline='')
-            self.maze_grid.create_rectangle((0, px0), (sqr_size, px1), fill='red', outline='')
+            self.maze_grid.create_rectangle((px0, 0), (px1, sqr_size), fill='red',
+                    outline='')
+            self.maze_grid.create_rectangle((0, px0), (sqr_size, px1), fill='red',
+                    outline='')
             self.maze_grid.tag_raise('grid_line')
 
     def toggle_tile(self, event):
