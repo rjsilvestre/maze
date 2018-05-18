@@ -38,6 +38,12 @@ class MazeGui:
             self.maze_grid.create_line((0, px), (self.maze_dim+self.line_width, px),
                     width=self.line_width, tag='grid_line')
 
+    def pos_to_cords(x, y):
+        half_line_width = self.line_width / 2
+        tile_x = event.x // (self.tile_side + (half_line_width/self.num_tiles))
+        tile_y = event.y // (self.tile_side + (half_line_width/self.num_tiles))
+        return tile_x, tile_y
+
     # TODO
     def build_empty_maze(self):
         sqr_size = self.tile_side + (2*self.line_width)
@@ -56,9 +62,7 @@ class MazeGui:
         Args:
             event: The event object of the bind
         """
-        half_line_width = self.line_width / 2
-        tile_x = event.x // (self.tile_side + (half_line_width/self.num_tiles))
-        tile_y = event.y // (self.tile_side + (half_line_width/self.num_tiles))
+        tile_x, tile_y = self.pos_to_cords(event.x, event.y)
         self.toggle_pos = (tile_x, tile_y)
         if (tile_x, tile_y) in self.tiles:
             self.maze_grid.delete(self.tiles[(tile_x, tile_y)])
