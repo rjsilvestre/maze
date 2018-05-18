@@ -39,6 +39,16 @@ class MazeGui:
                     width=self.line_width, tag='grid_line')
 
     def pos_to_cords(x, y):
+        """Calculates the cordinates of a tile on the canvas grid from a x, y
+        absolute position in pixels.
+
+        Args:
+            x: int, absolute x position in pixels.
+            y: int, aboslute y position in pixels.
+
+        Returns:
+            tuple, with the x, y coordinates acording to the canvas grid.
+        """
         half_line_width = self.line_width / 2
         tile_x = event.x // (self.tile_side + (half_line_width/self.num_tiles))
         tile_y = event.y // (self.tile_side + (half_line_width/self.num_tiles))
