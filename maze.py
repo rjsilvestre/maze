@@ -50,8 +50,8 @@ class MazeGui:
             tuple, with the x, y coordinates acording to the canvas grid.
         """
         half_line_width = self.line_width / 2
-        tile_x = x // (self.tile_side + (half_line_width/self.num_tiles))
-        tile_y = y // (self.tile_side + (half_line_width/self.num_tiles))
+        tile_x = int(x // (self.tile_side + (half_line_width/self.num_tiles)))
+        tile_y = int(y // (self.tile_side + (half_line_width/self.num_tiles)))
         return tile_x, tile_y
 
     # TODO
