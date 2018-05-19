@@ -93,7 +93,7 @@ class MazeGui:
         """
         tile_x, tile_y = self.pos_to_cords(event.x, event.y)
         self.toggle_pos = (tile_x, tile_y)
-        if 0 < tile_x < 14 and 0 < tile_y < 14:
+        if 0 < tile_x < self.num_tiles-1 and 0 < tile_y < self.num_tiles-1:
             self.toggle_tile(tile_x, tile_y)
 
     def update_toggle_pos(self, event):
