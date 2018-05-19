@@ -24,7 +24,7 @@ class MazeGui:
         # self.build_empty_maze()
 
         # Event bindings
-        self.maze_grid.bind('<Button-1>', self.toggle_tile)
+        self.maze_grid.bind('<Button-1>', self.press_tile)
         self.maze_grid.bind('<B1-Motion>', self.update_toggle_pos)
         self.maze_grid.bind('<ButtonRelease-1>', self.clear_toggle_pos)
 
@@ -65,15 +65,13 @@ class MazeGui:
                     outline='')
             self.maze_grid.tag_raise('grid_line')
 
-    def toggle_tile(self, event):
+    def toggle_tile(self, tile_x, tile_y):
         """Toggles the tile on the cursor position on the grid on or off.
-        Bind of <Button1> event, or called by the update_toggle_pos function.
 
         Args:
-            event: The event object of the bind
+            tile_x: int, x coordinate of the tile on the grid.
+            tile_y: int, y coordinate of the tile on the grid.
         """
-        tile_x, tile_y = self.pos_to_cords(event.x, event.y)
-        self.toggle_pos = (tile_x, tile_y)
         if (tile_x, tile_y) in self.tiles:
             self.maze_grid.delete(self.tiles[(tile_x, tile_y)])
             del self.tiles[(tile_x, tile_y)]
@@ -86,6 +84,18 @@ class MazeGui:
                     x, y, x2, y2, fill='red', outline='')
             self.maze_grid.tag_raise('grid_line')
 
+    def press_tile(self, event):
+        """Calls the toggle_tile function if it the pressed tile is not on the edge.
+        Bind of <Button1> event, or called by the update_toggle_pos function.
+
+        Args:
+            event: The event object of the bind
+        """
+        tile_x, tile_y = self.pos_to_cords(event.x, event.y)
+        self.toggle_pos = (tile_x, tile_y)
+        if 0 < tile_x < 14 and 0 < tile_y < 14:
+            self.toggle_tile(tile_x, tile_y)
+
     def update_toggle_pos(self, event):
         """Updates the toggle_pos attribute and calls toggle_tile function if
         the coordinate changes while the mouse button1 is pressed. Bind of
@@ -94,12 +104,10 @@ class MazeGui:
         Args:
             event: The event object of the bind
         """
-        half_line_width = self.line_width / 2
-        tile_x = event.x // (self.tile_side + (half_line_width/self.num_tiles))
-        tile_y = event.y // (self.tile_side + (half_line_width/self.num_tiles))
+        tile_x, tile_y = self.pos_to_cords(event.x, event.y)
         if (tile_x, tile_y) != self.toggle_pos:
             self.toggle_pos = (tile_x, tile_y)
-            self.toggle_tile(event)
+            self.press_tile(event)
 
     def clear_toggle_pos(self, event):
         """Clears the toggle_pos attribute setting it with the None value.
