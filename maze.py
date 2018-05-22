@@ -21,7 +21,7 @@ class MazeGui:
         # Functions calls
         self.maze_grid.pack()
         self.build_grid()
-        # self.build_empty_maze()
+        self.build_border()
 
         # Event bindings
         self.maze_grid.bind('<Button-1>', self.press_tile)
@@ -54,16 +54,18 @@ class MazeGui:
         tile_y = int(y // (self.tile_side + (half_line_width/self.num_tiles)))
         return tile_x, tile_y
 
-    # TODO
-    def build_empty_maze(self):
-        sqr_size = self.tile_side + (2*self.line_width)
-        for px0 in range(0, self.maze_dim+1, self.tile_side):
-            px1 = px0 + sqr_size
-            self.maze_grid.create_rectangle((px0, 0), (px1, sqr_size), fill='red',
-                    outline='')
-            self.maze_grid.create_rectangle((0, px0), (sqr_size, px1), fill='red',
-                    outline='')
-            self.maze_grid.tag_raise('grid_line')
+    def build_border(self):
+        exp_tile = self.tile_side + self.line_width
+        last_tile = self.tile_side * (self.num_tiles-1) + self.line_width
+        for px0 in range(self.line_width, self.maze_dim+1, self.tile_side):
+            px1 = px0 + exp_tile
+            self.toggle_tile(*self.pos_to_cords(px0, 0))
+            self.toggle_tile(*self.pos_to_cords(px0, last_tile))
+            if 0 < self.pos_to_cords(0, px0)[1] < self.num_tiles-1:
+                self.toggle_tile(*self.pos_to_cords(0, px0))
+            if 0 < self.pos_to_cords(last_tile, px0)[1] < self.num_tiles-1:
+                self.toggle_tile(*self.pos_to_cords(last_tile, px0))
+        self.maze_grid.tag_raise('grid_line')
 
     def toggle_tile(self, tile_x, tile_y):
         """Toggles the tile on the cursor position on the grid on or off.
