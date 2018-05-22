@@ -16,6 +16,9 @@ class MazeGui:
         self.maze_dim = self.num_tiles * self.tile_side
         self.toggle_pos = None
 
+        self.main_frame = tk.Frame(master=self.master, padx=5, pady=5)
+        self.main_frame.pack()
+
         # Functions calls
         self.build_grid()
         self.build_border()
@@ -28,7 +31,7 @@ class MazeGui:
     def build_grid(self):
         """Draws the grid lines on the maze_grid canvas.
         """
-        self.maze_grid = tk.Canvas(self.master, width=self.maze_dim, height=self.maze_dim,
+        self.maze_grid = tk.Canvas(self.main_frame, width=self.maze_dim, height=self.maze_dim,
                 bg='white', highlightthickness=self.line_width, highlightbackground='black')
         self.maze_grid.pack()
         for px in range(self.tile_side+self.line_width, self.maze_dim, self.tile_side):
