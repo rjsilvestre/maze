@@ -59,11 +59,13 @@ class MazeGui:
         last_tile = self.tile_side * (self.num_tiles-1) + self.line_width
         for px0 in range(self.line_width, self.maze_dim+1, self.tile_side):
             px1 = px0 + exp_tile
-            self.toggle_tile(*self.pos_to_cords(px0, 0))
-            self.toggle_tile(*self.pos_to_cords(px0, last_tile))
-            if 0 < self.pos_to_cords(0, px0)[1] < self.num_tiles-1:
+            if self.pos_to_cords(px0, 0) not in self.tiles:
+                self.toggle_tile(*self.pos_to_cords(px0, 0))
+            if self.pos_to_cords(px0, last_tile) not in self.tiles:
+                self.toggle_tile(*self.pos_to_cords(px0, last_tile))
+            if self.pos_to_cords(0, px0) not in self.tiles:
                 self.toggle_tile(*self.pos_to_cords(0, px0))
-            if 0 < self.pos_to_cords(last_tile, px0)[1] < self.num_tiles-1:
+            if self.pos_to_cords(last_tile, px0) not in self.tiles:
                 self.toggle_tile(*self.pos_to_cords(last_tile, px0))
         self.maze_grid.tag_raise('grid_line')
 
