@@ -127,6 +127,7 @@ class MazeGui:
         """
         self.toggle_pos = None
 
-root = tk.Tk()
-MazeGui(root)
-root.mainloop()
+if __name__ == '__main__':
+    root = tk.Tk()
+    MazeGui(root)
+    root.mainloop()
