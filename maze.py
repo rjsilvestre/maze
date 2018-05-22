@@ -16,6 +16,7 @@ class MazeGui:
         self.maze_dim = self.num_tiles * self.tile_side
         self.toggle_pos = None
 
+        # Creates frame
         self.main_frame = tk.Frame(master=self.master, padx=5, pady=5)
         self.main_frame.pack()
 
@@ -57,6 +58,8 @@ class MazeGui:
         return tile_x, tile_y
 
     def build_border(self):
+        """Creates maze tile outer wall border.
+        """
         exp_tile = self.tile_side + self.line_width
         last_tile = self.tile_side * (self.num_tiles-1) + self.line_width
         for px0 in range(self.line_width, self.maze_dim+1, self.tile_side):
