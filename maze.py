@@ -9,12 +9,12 @@ class MazeGui:
     """
     def __init__(self, master):
         self.master = master
-        self.line_width = 2
-        self.tile_side = 50
-        self.num_tiles = 15
-        self.tiles = {}
-        self.maze_dim = self.num_tiles * self.tile_side
-        self.toggle_pos = None
+        self._line_width = 2
+        self._tile_side = 50
+        self._num_tiles = 15
+        self._tiles = {}
+        self._maze_dim = self._num_tiles * self._tile_side
+        self._toggle_pos = None
 
         # Creates frame
         self.main_frame = tk.Frame(master=self.master, padx=5, pady=5)
@@ -32,14 +32,14 @@ class MazeGui:
     def build_grid(self):
         """Draws the grid lines on the maze_grid canvas.
         """
-        self.maze_grid = tk.Canvas(self.main_frame, width=self.maze_dim, height=self.maze_dim,
-                bg='white', highlightthickness=self.line_width, highlightbackground='black')
+        self.maze_grid = tk.Canvas(self.main_frame, width=self._maze_dim, height=self._maze_dim,
+                bg='white', highlightthickness=self._line_width, highlightbackground='black')
         self.maze_grid.pack()
-        for px in range(self.tile_side+self.line_width, self.maze_dim, self.tile_side):
-            self.maze_grid.create_line((px, 0), (px, self.maze_dim+self.line_width),
-                    width=self.line_width, tag='grid_line')
-            self.maze_grid.create_line((0, px), (self.maze_dim+self.line_width, px),
-                    width=self.line_width, tag='grid_line')
+        for px in range(self._tile_side+self._line_width, self._maze_dim, self._tile_side):
+            self.maze_grid.create_line((px, 0), (px, self._maze_dim+self._line_width),
+                    width=self._line_width, tag='grid_line')
+            self.maze_grid.create_line((0, px), (self._maze_dim+self._line_width, px),
+                    width=self._line_width, tag='grid_line')
 
     def pos_to_cords(self, x, y):
         """Calculates the cordinates of a tile on the canvas grid from a x, y
@@ -52,25 +52,25 @@ class MazeGui:
         Returns:
             tuple, with the x, y coordinates acording to the canvas grid.
         """
-        half_line_width = self.line_width / 2
-        tile_x = int(x // (self.tile_side + (half_line_width/self.num_tiles)))
-        tile_y = int(y // (self.tile_side + (half_line_width/self.num_tiles)))
+        half_line_width = self._line_width / 2
+        tile_x = int(x // (self._tile_side + (half_line_width/self._num_tiles)))
+        tile_y = int(y // (self._tile_side + (half_line_width/self._num_tiles)))
         return tile_x, tile_y
 
     def build_border(self):
         """Creates maze tile outer wall border.
         """
-        exp_tile = self.tile_side + self.line_width
-        last_tile = self.tile_side * (self.num_tiles-1) + self.line_width
-        for px0 in range(self.line_width, self.maze_dim+1, self.tile_side):
+        exp_tile = self._tile_side + self._line_width
+        last_tile = self._tile_side * (self._num_tiles-1) + self._line_width
+        for px0 in range(self._line_width, self._maze_dim+1, self._tile_side):
             px1 = px0 + exp_tile
-            if self.pos_to_cords(px0, 0) not in self.tiles:
+            if self.pos_to_cords(px0, 0) not in self._tiles:
                 self.toggle_tile(*self.pos_to_cords(px0, 0))
-            if self.pos_to_cords(px0, last_tile) not in self.tiles:
+            if self.pos_to_cords(px0, last_tile) not in self._tiles:
                 self.toggle_tile(*self.pos_to_cords(px0, last_tile))
-            if self.pos_to_cords(0, px0) not in self.tiles:
+            if self.pos_to_cords(0, px0) not in self._tiles:
                 self.toggle_tile(*self.pos_to_cords(0, px0))
-            if self.pos_to_cords(last_tile, px0) not in self.tiles:
+            if self.pos_to_cords(last_tile, px0) not in self._tiles:
                 self.toggle_tile(*self.pos_to_cords(last_tile, px0))
         self.maze_grid.tag_raise('grid_line')
 
@@ -81,15 +81,15 @@ class MazeGui:
             tile_x: int, x coordinate of the tile on the grid.
             tile_y: int, y coordinate of the tile on the grid.
         """
-        if (tile_x, tile_y) in self.tiles:
-            self.maze_grid.delete(self.tiles[(tile_x, tile_y)])
-            del self.tiles[(tile_x, tile_y)]
+        if (tile_x, tile_y) in self._tiles:
+            self.maze_grid.delete(self._tiles[(tile_x, tile_y)])
+            del self._tiles[(tile_x, tile_y)]
         else:
-            x = (self.tile_side*tile_x) + self.line_width
-            y = (self.tile_side*tile_y) + self.line_width
-            x2 = (self.tile_side*tile_x) + self.tile_side + self.line_width
-            y2 = (self.tile_side*tile_y) + self.tile_side + self.line_width
-            self.tiles[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
+            x = (self._tile_side*tile_x) + self._line_width
+            y = (self._tile_side*tile_y) + self._line_width
+            x2 = (self._tile_side*tile_x) + self._tile_side + self._line_width
+            y2 = (self._tile_side*tile_y) + self._tile_side + self._line_width
+            self._tiles[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
                     x, y, x2, y2, fill='red', outline='')
             self.maze_grid.tag_raise('grid_line')
 
@@ -101,8 +101,8 @@ class MazeGui:
             event: The event object of the bind
         """
         tile_x, tile_y = self.pos_to_cords(event.x, event.y)
-        self.toggle_pos = (tile_x, tile_y)
-        if 0 < tile_x < self.num_tiles-1 and 0 < tile_y < self.num_tiles-1:
+        self._toggle_pos = (tile_x, tile_y)
+        if 0 < tile_x < self._num_tiles-1 and 0 < tile_y < self._num_tiles-1:
             self.toggle_tile(tile_x, tile_y)
 
     def update_toggle_pos(self, event):
@@ -114,8 +114,8 @@ class MazeGui:
             event: The event object of the bind
         """
         tile_x, tile_y = self.pos_to_cords(event.x, event.y)
-        if (tile_x, tile_y) != self.toggle_pos:
-            self.toggle_pos = (tile_x, tile_y)
+        if (tile_x, tile_y) != self._toggle_pos:
+            self._toggle_pos = (tile_x, tile_y)
             self.press_tile(event)
 
     def clear_toggle_pos(self, event):
@@ -125,7 +125,7 @@ class MazeGui:
         Args:
             event: The event object of the bind.
         """
-        self.toggle_pos = None
+        self._toggle_pos = None
 
 if __name__ == '__main__':
     root = tk.Tk()
