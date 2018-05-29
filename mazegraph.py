@@ -7,13 +7,12 @@ class MazeGraph:
                 for y in range(self._num_nodes) if (x, y) not in walls]
         self._graph = {(x, y): [] for x in range(self._num_nodes)
                 for y in range(self._num_nodes)}
-        for tile in path:
-            x, y = tile
+        for x, y in path:
             if (x+1, y) in path and (x+1, y) in self._graph:
-                self._graph[tile].append((x+1, y))
+                self._graph[(x, y)].append((x+1, y))
             if (x-1, y) in path and (x-1, y) in self._graph:
-                self._graph[tile].append((x-1, y))
+                self._graph[(x, y)].append((x-1, y))
             if (x, y+1) in path and (x, y+1) in self._graph:
-                self._graph[tile].append((x, y+1))
+                self._graph[(x, y)].append((x, y+1))
             if (x, y-1) in path and (x, y-1) in self._graph:
-                self._graph[tile].append((x, y-1))
+                self._graph[(x, y)].append((x, y-1))
