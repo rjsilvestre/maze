@@ -1,4 +1,5 @@
 import tkinter as tk
+import mazegraph as mg
 
 class MazeGui:
     """Main gui, contains the maze grid and the maze object. Allows to save,
@@ -15,6 +16,7 @@ class MazeGui:
         self._tiles = {}
         self._maze_dim = self._num_tiles * self._tile_side
         self._toggle_pos = None
+        self._maze = mg.MazeGraph(15)
 
         # Creates frame
         self.main_frame = tk.Frame(master=self.master, padx=5, pady=5)
