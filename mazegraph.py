@@ -1,12 +1,12 @@
 class MazeGraph:
-    def __init__(self, maze_dim):
-        self._maze_dim = maze_dim
+    def __init__(self, num_nodes):
+        self._num_nodes = num_nodes
 
     def make_graph(self, walls):
-        path = [(x, y) for x in range(self._maze_dim)
-                for y in range(self._maze_dim) if (x, y) not in walls]
-        self._graph = {(x, y): [] for x in range(self._maze_dim)
-                for y in range(self._maze_dim)}
+        path = [(x, y) for x in range(self._num_nodes)
+                for y in range(self._num_nodes) if (x, y) not in walls]
+        self._graph = {(x, y): [] for x in range(self._num_nodes)
+                for y in range(self._num_nodes)}
         for tile in path:
             x, y = tile
             if (x+1, y) in path and (x+1, y) in self._graph:
