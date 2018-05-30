@@ -1,4 +1,4 @@
-class MazeGraph:
+class Maze:
     def __init__(self, num_nodes):
         self._num_nodes = num_nodes
         self._walls = set()
