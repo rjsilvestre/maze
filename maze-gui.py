@@ -94,6 +94,7 @@ class MazeGui:
             self._tiles[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
                     x, y, x2, y2, fill='red', outline='')
             self.maze_grid.tag_raise('grid_line')
+        self._maze.update_walls((tile_x, tile_y))
 
     def press_tile(self, event):
         """Calls the toggle_tile function if it the pressed tile is not on the edge.
