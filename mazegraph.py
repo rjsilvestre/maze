@@ -1,10 +1,22 @@
 class MazeGraph:
     def __init__(self, num_nodes):
         self._num_nodes = num_nodes
+        self._walls = set()
 
-    def make_graph(self, walls):
+    def update_walls(self, tile):
+        if not isinstance(tile, tuple):
+            raise TypeError('Tile is not a tuple.')
+        x, y = tile
+        if x not in range(self._num_nodes) or y not in range(self._num_nodes):
+            raise ValueError('Tile coordinates are not valid.')
+        if tile in self._walls:
+            self._walls.remove(tile)
+        else:
+            self._walls.add(tile)
+
+    def make_graph(self):
         path = [(x, y) for x in range(self._num_nodes)
-                for y in range(self._num_nodes) if (x, y) not in walls]
+                for y in range(self._num_nodes) if (x, y) not in self._walls]
         self._graph = {(x, y): [] for x, y in path}
         for x, y in path:
             if (x+1, y) in path and (x+1, y) in self._graph:
