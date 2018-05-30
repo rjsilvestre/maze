@@ -5,8 +5,7 @@ class MazeGraph:
     def make_graph(self, walls):
         path = [(x, y) for x in range(self._num_nodes)
                 for y in range(self._num_nodes) if (x, y) not in walls]
-        self._graph = {(x, y): [] for x in range(self._num_nodes)
-                for y in range(self._num_nodes)}
+        self._graph = {(x, y): [] for x, y in path}
         for x, y in path:
             if (x+1, y) in path and (x+1, y) in self._graph:
                 self._graph[(x, y)].append((x+1, y))
