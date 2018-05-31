@@ -1,6 +1,8 @@
 class Maze:
     def __init__(self, num_nodes):
         self._num_nodes = num_nodes
+        self._start = (1, 1)
+        self._goal = (self._num_nodes-2, self._num_nodes-2)
         self._walls = set()
 
     def update_walls(self, tile):
