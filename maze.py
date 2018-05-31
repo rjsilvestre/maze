@@ -29,3 +29,15 @@ class Maze:
                 self._graph[(x, y)].append((x, y+1))
             if (x, y-1) in paths and (x, y-1) in self._graph:
                 self._graph[(x, y)].append((x, y-1))
+
+    def dfs(self, path, next_node):
+        self.make_graph()
+        # Concatenate instead of appending to not mutate path
+        path = path + [next_node]
+        if next_node == self._goal:
+            return path
+        for node in self._graph[next_node]:
+            if node not in path:
+                final_path = self.dfs(path, node)
+                if final_path:
+                    return final_path
