@@ -25,7 +25,7 @@ class MazeGui:
 
         # Buttons frame
         self.btns_frame = tk.Frame(self.master)
-        self.btns_frame.pack(padx=5, pady=5)
+        self.btns_frame.pack(padx=5, pady=(0, 5))
 
         # Buttons
         self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search', command=self.dfs)
