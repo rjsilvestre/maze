@@ -114,7 +114,7 @@ class MazeGui:
             x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
             self.tiles[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
                     x1, y1, x2, y2, fill='red', outline='')
-            self.maze_grid.tag_raise('grid_line')
+        self.maze_grid.tag_raise('grid_line')
         self.maze.update_walls((tile_x, tile_y))
 
     def draw_path(self, path):
@@ -123,7 +123,7 @@ class MazeGui:
             x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
             self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
                     x1, y1, x2, y2, fill='blue', outline='')
-            self.maze_grid.tag_raise('grid_line')
+        self.maze_grid.tag_raise('grid_line')
 
     def clear_path(self):
         for tile in list(self.path):
