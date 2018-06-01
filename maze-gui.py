@@ -47,16 +47,16 @@ class MazeGui:
             self.maze_grid.create_line((0, px), (self.maze_dim+self.line_width, px),
                     width=self.line_width, tag='grid_line')
 
-    def pos_to_cords(self, x, y):
-        """Calculates the cordinates of a tile on the canvas grid from a x, y
-        absolute position in pixels.
+    def cords_to_tile(self, x, y):
+        """Calculates the position of a tile on the canvas grid from a x, y
+        coordinates in pixels.
 
         Args:
-            x: int, absolute x position in pixels.
-            y: int, aboslute y position in pixels.
+            x: int, x coordinate in pixels.
+            y: int, y coordinate in pixels.
 
         Returns:
-            tuple, with the x, y coordinates acording to the canvas grid.
+            tuple, with the x, y position acording to the canvas grid.
         """
         half_line_width = self.line_width / 2
         tile_x = int(x // (self.tile_side + (half_line_width/self.num_tiles)))
@@ -70,14 +70,14 @@ class MazeGui:
         last_tile = self.tile_side * (self.num_tiles-1) + self.line_width
         for px0 in range(self.line_width, self.maze_dim+1, self.tile_side):
             px1 = px0 + exp_tile
-            if self.pos_to_cords(px0, 0) not in self.tiles:
-                self.toggle_tile(*self.pos_to_cords(px0, 0))
-            if self.pos_to_cords(px0, last_tile) not in self.tiles:
-                self.toggle_tile(*self.pos_to_cords(px0, last_tile))
-            if self.pos_to_cords(0, px0) not in self.tiles:
-                self.toggle_tile(*self.pos_to_cords(0, px0))
-            if self.pos_to_cords(last_tile, px0) not in self.tiles:
-                self.toggle_tile(*self.pos_to_cords(last_tile, px0))
+            if self.cords_to_tile(px0, 0) not in self.tiles:
+                self.toggle_tile(*self.cords_to_tile(px0, 0))
+            if self.cords_to_tile(px0, last_tile) not in self.tiles:
+                self.toggle_tile(*self.cords_to_tile(px0, last_tile))
+            if self.cords_to_tile(0, px0) not in self.tiles:
+                self.toggle_tile(*self.cords_to_tile(0, px0))
+            if self.cords_to_tile(last_tile, px0) not in self.tiles:
+                self.toggle_tile(*self.cords_to_tile(last_tile, px0))
         self.maze_grid.tag_raise('grid_line')
 
     def toggle_tile(self, tile_x, tile_y):
@@ -107,7 +107,7 @@ class MazeGui:
         Args:
             event: The event object of the bind
         """
-        tile_x, tile_y = self.pos_to_cords(event.x, event.y)
+        tile_x, tile_y = self.cords_to_tile(event.x, event.y)
         self.toggle_pos = (tile_x, tile_y)
         if 0 < tile_x < self.num_tiles-1 and 0 < tile_y < self.num_tiles-1:
             self.toggle_tile(tile_x, tile_y)
@@ -120,7 +120,7 @@ class MazeGui:
         Args:
             event: The event object of the bind
         """
-        tile_x, tile_y = self.pos_to_cords(event.x, event.y)
+        tile_x, tile_y = self.cords_to_tile(event.x, event.y)
         if (tile_x, tile_y) != self.toggle_pos:
             self.toggle_pos = (tile_x, tile_y)
             self.press_tile(event)
