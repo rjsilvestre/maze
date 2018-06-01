@@ -18,13 +18,17 @@ class MazeGui:
         self._toggle_pos = None
         self._maze = maze.Maze(self._num_tiles)
 
-        # Creates frame
-        self.main_frame = tk.Frame(master=self.master, padx=5, pady=5)
-        self.main_frame.pack()
-
-        # Functions calls
+        # Build empty maze
         self.build_grid()
         self.build_border()
+
+        # Buttons frame
+        self.btns_frame = tk.Frame(self.master)
+        self.btns_frame.pack(padx=5, pady=5)
+
+        # Buttons
+        self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search')
+        self.btn_dfs.pack(side=tk.BOTTOM)
 
         # Event bindings
         self.maze_grid.bind('<Button-1>', self.press_tile)
@@ -34,9 +38,9 @@ class MazeGui:
     def build_grid(self):
         """Draws the grid lines on the maze_grid canvas.
         """
-        self.maze_grid = tk.Canvas(self.main_frame, width=self._maze_dim, height=self._maze_dim,
+        self.maze_grid = tk.Canvas(self.master, width=self._maze_dim, height=self._maze_dim,
                 bg='white', highlightthickness=self._line_width, highlightbackground='black')
-        self.maze_grid.pack()
+        self.maze_grid.pack(padx=5, pady=5)
         for px in range(self._tile_side+self._line_width, self._maze_dim, self._tile_side):
             self.maze_grid.create_line((px, 0), (px, self._maze_dim+self._line_width),
                     width=self._line_width, tag='grid_line')
