@@ -63,6 +63,23 @@ class MazeGui:
         tile_y = int(y // (self.tile_side + (half_line_width/self.num_tiles)))
         return tile_x, tile_y
 
+    def tile_to_cords(self, tile_x, tile_y):
+        """Calculates the coordinates of the left top and botton right edges of
+        a tile on the canvas.
+
+        Args:
+            x: int, x position of the tile.
+            y: int, y position of the tile.
+
+        Returns:
+            tuple, with the x1, y1, x2, y2 coordinates of the edges on the canvas.
+        """
+        x1 = (self.tile_side*tile_x) + self.line_width
+        y1 = (self.tile_side*tile_y) + self.line_width
+        x2 = (self.tile_side*tile_x) + self.tile_side + self.line_width
+        y2 = (self.tile_side*tile_y) + self.tile_side + self.line_width
+        return x1, y1, x2, y2
+
     def build_border(self):
         """Creates maze tile outer wall border.
         """
@@ -91,12 +108,9 @@ class MazeGui:
             self.maze_grid.delete(self.tiles[(tile_x, tile_y)])
             del self.tiles[(tile_x, tile_y)]
         else:
-            x = (self.tile_side*tile_x) + self.line_width
-            y = (self.tile_side*tile_y) + self.line_width
-            x2 = (self.tile_side*tile_x) + self.tile_side + self.line_width
-            y2 = (self.tile_side*tile_y) + self.tile_side + self.line_width
+            x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
             self.tiles[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
-                    x, y, x2, y2, fill='red', outline='')
+                    x1, y1, x2, y2, fill='red', outline='')
             self.maze_grid.tag_raise('grid_line')
         self.maze.update_walls((tile_x, tile_y))
 
