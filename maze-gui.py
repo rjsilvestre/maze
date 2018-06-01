@@ -29,6 +29,8 @@ class MazeGui:
 
         # Buttons
         self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search', command=self.dfs)
+        self.btn_clr_path = tk.Button(self.btns_frame, text='Clear Path', command=self.clear_path)
+        self.btn_clr_path.pack(side=tk.BOTTOM)
         self.btn_dfs.pack(side=tk.BOTTOM)
 
         # Event bindings
@@ -131,6 +133,7 @@ class MazeGui:
 
     # Buttons methods
     def dfs(self, animate=False):
+        self.clear_path()
         path = self.maze.dfs([], self.maze.start)
         if path:
             self.draw_path(path)
