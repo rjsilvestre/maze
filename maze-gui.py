@@ -28,7 +28,7 @@ class MazeGui:
         self.btns_frame.pack(padx=5, pady=5)
 
         # Buttons
-        self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search')
+        self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search', command=self.dfs)
         self.btn_dfs.pack(side=tk.BOTTOM)
 
         # Event bindings
@@ -128,6 +128,12 @@ class MazeGui:
             tile_x, tile_y = tile
             self.maze_grid.delete(self.path[(tile_x, tile_y)])
             del self.path[(tile_x, tile_y)]
+
+    # Buttons methods
+    def dfs(self, animate=False):
+        path = self.maze.dfs([], self.maze.start)
+        if path:
+            self.draw_path(path)
 
     # Bind methods
     def press_tile(self, event):
