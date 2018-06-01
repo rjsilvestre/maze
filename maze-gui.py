@@ -17,6 +17,7 @@ class MazeGui:
         self.maze_dim = self.num_tiles * self.tile_side
         self.toggle_pos = None
         self.maze = maze.Maze(self.num_tiles)
+        self.path = {}
 
         # Build empty maze
         self.build_grid()
@@ -114,6 +115,21 @@ class MazeGui:
             self.maze_grid.tag_raise('grid_line')
         self.maze.update_walls((tile_x, tile_y))
 
+    def draw_path(self, path):
+        for tile in path:
+            tile_x, tile_y = tile
+            x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
+            self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
+                    x1, y1, x2, y2, fill='blue', outline='')
+            self.maze_grid.tag_raise('grid_line')
+
+    def clear_path(self):
+        for tile in list(self.path):
+            tile_x, tile_y = tile
+            self.maze_grid.delete(self.path[(tile_x, tile_y)])
+            del self.path[(tile_x, tile_y)]
+
+    # Bind methods
     def press_tile(self, event):
         """Calls the toggle_tile function if it the pressed tile is not on the edge.
         Bind of <Button1> event, or called by the update_toggle_pos function.
