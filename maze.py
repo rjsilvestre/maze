@@ -5,6 +5,14 @@ class Maze:
         self._goal = (self._num_nodes-2, self._num_nodes-2)
         self._walls = set()
 
+    @property
+    def start(self):
+        return self._start
+
+    @property
+    def goal(self):
+        return self._goal
+
     def update_walls(self, tile):
         if not isinstance(tile, tuple):
             raise TypeError('Tile is not a tuple.')
