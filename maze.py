@@ -13,12 +13,15 @@ class Maze:
     def goal(self):
         return self._goal
 
-    def update_walls(self, tile):
+    def validate_tile(self, tile):
         if not isinstance(tile, tuple):
             raise TypeError('Tile is not a tuple.')
         x, y = tile
         if x not in range(self._num_nodes) or y not in range(self._num_nodes):
             raise ValueError('Tile coordinates are not valid.')
+
+    def update_walls(self, tile):
+        self.validate_tile(tile)
         if tile in self._walls:
             self._walls.remove(tile)
         else:
