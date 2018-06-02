@@ -16,7 +16,8 @@ class MazeGui:
         self.tiles = {}
         self.maze_dim = self.num_tiles * self.tile_side
         self.toggle_pos = None
-        self.maze = maze.Maze(self.num_tiles)
+        goal_pos = self.num_tiles - 2
+        self.maze = maze.Maze(self.num_tiles, (1, 1), (goal_pos, goal_pos))
         self.path = {}
 
         # Build empty maze

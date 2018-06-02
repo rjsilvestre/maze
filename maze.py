@@ -1,17 +1,35 @@
 class Maze:
-    def __init__(self, num_nodes):
+    """Square maze object with. Creates a graph of the possible paths from the maze
+    walls. Calculates a path to the goal using different pathfinding algorithms.
+
+    Args:
+        num_nodes: int, number of nodes per side.
+        start: tuple, with two ints, the position on the grid.
+        goal: tuple, with two ints, the position on the grid.
+    """
+    def __init__(self, num_nodes, start, goal):
         self._num_nodes = num_nodes
-        self._start = (1, 1)
-        self._goal = (self._num_nodes-2, self._num_nodes-2)
         self._walls = set()
+        self.start = start
+        self.goal = goal
 
     @property
     def start(self):
         return self._start
 
+    @start.setter
+    def start(self, tile):
+        self.validate_tile(tile)
+        self._start = tile
+
     @property
     def goal(self):
         return self._goal
+
+    @goal.setter
+    def goal(self, tile):
+        self.validate_tile(tile)
+        self._goal = tile
 
     def validate_tile(self, tile):
         if not isinstance(tile, tuple):
