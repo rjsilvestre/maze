@@ -135,7 +135,7 @@ class MazeGui:
     # Buttons methods
     def dfs(self, animate=False):
         self.clear_path()
-        path = self.maze.dfs([], self.maze.start)
+        path = self.maze.dfs()
         if path:
             self.draw_path(path)
 
