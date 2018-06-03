@@ -84,12 +84,14 @@ class Maze:
     def bfs(self):
         self.make_graph()
         paths = [[self._start]]
+        visited = set()
         while paths:
             cur_path = paths.pop(0)
             cur_node = cur_path[-1]
             if cur_node == self._goal:
                 return cur_path
             for next_node in self._graph[cur_node]:
-                if next_node not in cur_path:
+                if next_node not in visited:
+                    visited.add(next_node)
                     new_path = cur_path + [next_node]
                     paths.append(new_path)
