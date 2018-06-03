@@ -61,10 +61,10 @@ class Maze:
         for x, y in paths:
             if (x+1, y) in paths and (x+1, y) in self._graph:
                 self._graph[(x, y)].append((x+1, y))
-            if (x-1, y) in paths and (x-1, y) in self._graph:
-                self._graph[(x, y)].append((x-1, y))
             if (x, y+1) in paths and (x, y+1) in self._graph:
                 self._graph[(x, y)].append((x, y+1))
+            if (x-1, y) in paths and (x-1, y) in self._graph:
+                self._graph[(x, y)].append((x-1, y))
             if (x, y-1) in paths and (x, y-1) in self._graph:
                 self._graph[(x, y)].append((x, y-1))
 
