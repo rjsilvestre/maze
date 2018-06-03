@@ -80,3 +80,16 @@ class Maze:
                 final_path = self.dfs(path, node)
                 if final_path:
                     return final_path
+
+    def bfs(self):
+        self.make_graph()
+        paths = [[self._start]]
+        while paths:
+            cur_path = paths.pop(0)
+            cur_node = cur_path[-1]
+            if cur_node == self._goal:
+                return cur_path
+            for next_node in self._graph[cur_node]:
+                if next_node not in cur_path:
+                    new_path = cur_path + [next_node]
+                    paths.append(new_path)
