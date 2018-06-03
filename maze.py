@@ -13,13 +13,29 @@ class Maze:
         self.start = start
         self.goal = goal
 
+    def validate_tile(func):
+        """Validates if the argument is a valid maze tile.
+
+        Raises:
+            TypeError: If the argument is not a tuple.
+            ValueError: If ane of the elements is not in a valid range.
+        """
+        def validation(self, tile):
+            if not isinstance(tile, tuple):
+                raise TypeError('Tile is not a tuple.')
+            x, y = tile
+            if x not in range(self._num_nodes) or y not in range(self._num_nodes):
+                raise ValueError('Tile coordinates are not valid.')
+            return func(self, tile)
+        return validation
+
     @property
     def start(self):
         return self._start
 
     @start.setter
+    @validate_tile
     def start(self, tile):
-        self.validate_tile(tile)
         self._start = tile
 
     @property
@@ -27,19 +43,12 @@ class Maze:
         return self._goal
 
     @goal.setter
+    @validate_tile
     def goal(self, tile):
-        self.validate_tile(tile)
         self._goal = tile
 
-    def validate_tile(self, tile):
-        if not isinstance(tile, tuple):
-            raise TypeError('Tile is not a tuple.')
-        x, y = tile
-        if x not in range(self._num_nodes) or y not in range(self._num_nodes):
-            raise ValueError('Tile coordinates are not valid.')
-
+    @validate_tile
     def update_walls(self, tile):
-        self.validate_tile(tile)
         if tile in self._walls:
             self._walls.remove(tile)
         else:
