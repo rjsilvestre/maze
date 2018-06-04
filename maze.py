@@ -77,24 +77,24 @@ class Maze:
         path = path + [next_node]      # Concatenate instead of appending to not mutate path
         visited.append(next_node)
         if next_node == self._goal:
-            return path
+            return path, visited
         for node in self._graph[next_node]:
             if node not in visited:
-                final_path = self.dfs(node, path, visited)
+                final_path, visited = self.dfs(node, path, visited)
                 if final_path:
-                    return final_path
+                    return final_path, visited
 
     def bfs(self):
         self.make_graph()
         paths = [[self._start]]
-        visited = set()
+        visited = [self._start]
         while paths:
             cur_path = paths.pop(0)
             cur_node = cur_path[-1]
             if cur_node == self._goal:
-                return cur_path
+                return cur_path, visited
             for next_node in self._graph[cur_node]:
                 if next_node not in visited:
-                    visited.add(next_node)
+                    visited.append(next_node)
                     new_path = cur_path + [next_node]
                     paths.append(new_path)
