@@ -13,11 +13,11 @@ class MazeGui:
         self.line_width = 2
         self.tile_side = 50
         self.num_tiles = 15
-        self.tiles = {}
         self.maze_dim = self.num_tiles * self.tile_side
         self.toggle_pos = None
         goal_pos = self.num_tiles - 2
         self.maze = maze.Maze(self.num_tiles, (1, 1), (goal_pos, goal_pos))
+        self.tiles = {}
         self.path = {}
 
         # Build empty maze
@@ -26,20 +26,20 @@ class MazeGui:
 
         # Buttons frame
         self.btns_frame = tk.Frame(self.master)
-        self.btns_frame.pack(padx=5, pady=(0, 5))
+        self.btns_frame.pack(side=tk.BOTTOM, padx=5, pady=(0, 5))
 
         # Buttons
+        self.btn_reset_grid = tk.Button(self.btns_frame, text='Reset', command=self.reset_grid)
         self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search', command=self.dfs)
         self.btn_bfs = tk.Button(self.btns_frame, text='Breadth First Search', command=self.bfs)
         self.btn_clr_path = tk.Button(self.btns_frame, text='Clear Path', command=self.clear_path)
+        self.btn_reset_grid.pack()
         self.btn_dfs.pack()
         self.btn_bfs.pack()
         self.btn_clr_path.pack()
 
         # Event bindings
-        self.maze_grid.bind('<Button-1>', self.press_tile)
-        self.maze_grid.bind('<B1-Motion>', self.update_toggle_pos)
-        self.maze_grid.bind('<ButtonRelease-1>', self.clear_toggle_pos)
+        self.set_binds()
 
     def build_grid(self):
         """Draws the grid lines on the maze_grid canvas.
@@ -86,6 +86,11 @@ class MazeGui:
         y2 = (self.tile_side*tile_y) + self.tile_side + self.line_width
         return x1, y1, x2, y2
 
+    def set_binds(self):
+        self.maze_grid.bind('<Button-1>', self.press_tile)
+        self.maze_grid.bind('<B1-Motion>', self.update_toggle_pos)
+        self.maze_grid.bind('<ButtonRelease-1>', self.clear_toggle_pos)
+
     def build_border(self):
         """Creates maze tile outer wall border.
         """
@@ -127,6 +132,16 @@ class MazeGui:
             self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
                     x1, y1, x2, y2, fill='blue', outline='')
         self.maze_grid.tag_raise('grid_line')
+
+    def reset_grid(self):
+        self.maze_grid.destroy()
+        goal_pos = self.num_tiles - 2
+        self.maze = maze.Maze(self.num_tiles, (1, 1), (goal_pos, goal_pos))
+        self.tiles = {}
+        self.path = {}
+        self.build_grid()
+        self.build_border()
+        self.set_binds()
 
     def clear_path(self):
         for tile in list(self.path):
