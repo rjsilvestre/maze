@@ -80,9 +80,9 @@ class Maze:
             return path, visited
         for node in self._graph[next_node]:
             if node not in visited:
-                final_path = self.dfs(node, path, visited)
-                if final_path:
-                    return final_path
+                visited_path = self.dfs(node, path, visited)
+                if visited_path:
+                    return visited_path
 
     def bfs(self):
         self.make_graph()
