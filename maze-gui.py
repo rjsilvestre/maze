@@ -17,8 +17,7 @@ class MazeGui:
         self.toggle_pos = None
         goal_pos = self.num_tiles - 2
         self.maze = maze.Maze(self.num_tiles, (1, 1), (goal_pos, goal_pos))
-        self.tiles = {}
-        self.path = {}
+        self.tiles, self.path, self.visited = {}, {}, {}
 
         # Build empty maze
         self.build_grid()
@@ -29,14 +28,24 @@ class MazeGui:
         self.btns_frame.pack(side=tk.BOTTOM, padx=5, pady=(0, 5))
 
         # Buttons
-        self.btn_reset_grid = tk.Button(self.btns_frame, text='Reset', command=self.reset_grid)
-        self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search', command=self.dfs)
-        self.btn_bfs = tk.Button(self.btns_frame, text='Breadth First Search', command=self.bfs)
-        self.btn_clr_path = tk.Button(self.btns_frame, text='Clear Path', command=self.clear_path)
-        self.btn_reset_grid.pack()
-        self.btn_dfs.pack()
-        self.btn_bfs.pack()
-        self.btn_clr_path.pack()
+        self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search',
+                command=self.dfs)
+        self.btn_dfs_anim = tk.Button(self.btns_frame, text='DFS Animated',
+                command=lambda: self.dfs(animate=True))
+        self.btn_bfs = tk.Button(self.btns_frame, text='Breadth First Search',
+                command=self.bfs)
+        self.btn_bfs_anim = tk.Button(self.btns_frame, text='BFS Animated',
+                command=lambda: self.bfs(animate=True))
+        self.btn_clr_visited_path = tk.Button(self.btns_frame, text='Clear Path',
+                command=self.clear_visited_path)
+        self.btn_reset_grid = tk.Button(self.btns_frame, text='Reset',
+                command=self.reset_grid)
+        self.btn_dfs.grid(row=0, column=0)
+        self.btn_dfs_anim.grid(row=0, column=1)
+        self.btn_bfs.grid(row=1, column=0)
+        self.btn_bfs_anim.grid(row=1, column=1)
+        self.btn_clr_visited_path.grid(row=2, column=0)
+        self.btn_reset_grid.grid(row=2, column=1)
 
         # Event bindings
         self.set_binds()
@@ -125,41 +134,57 @@ class MazeGui:
         self.maze_grid.tag_raise('grid_line')
         self.maze.update_walls((tile_x, tile_y))
 
-    def draw_path(self, path):
+    def draw_path(self, path, animate=False):
+        fill_color = 'green' if animate else 'blue'
         for tile in path:
             tile_x, tile_y = tile
             x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
-            self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
-                    x1, y1, x2, y2, fill='blue', outline='')
-        self.maze_grid.tag_raise('grid_line')
+            if animate:
+                self.maze_grid.after(100)
+                self.visited[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
+                        x1, y1, x2, y2, fill=fill_color, outline='')
+                self.maze_grid.tag_raise('grid_line')
+                self.maze_grid.update()
+            else:
+                self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
+                        x1, y1, x2, y2, fill=fill_color, outline='')
+            self.maze_grid.tag_raise('grid_line')
 
     def reset_grid(self):
         self.maze_grid.destroy()
         goal_pos = self.num_tiles - 2
         self.maze = maze.Maze(self.num_tiles, (1, 1), (goal_pos, goal_pos))
-        self.tiles = {}
-        self.path = {}
+        self.tiles, self.path, self.visited = {}, {}, {}
         self.build_grid()
         self.build_border()
         self.set_binds()
 
-    def clear_path(self):
+    def clear_visited_path(self):
         for tile in list(self.path):
             tile_x, tile_y = tile
             self.maze_grid.delete(self.path[(tile_x, tile_y)])
-            del self.path[(tile_x, tile_y)]
+        for tile in list(self.visited):
+            tile_x, tile_y = tile
+            self.maze_grid.delete(self.visited[(tile_x, tile_y)])
+        self.path, self.visited = {}, {}
 
     # Buttons methods
     def dfs(self, animate=False):
-        self.clear_path()
-        path = self.maze.dfs()
-        if path:
+        self.clear_visited_path()
+        visited_path= self.maze.dfs()
+        if visited_path:
+            path, visited = visited_path
+            if animate:
+                self.draw_path(visited, animate=True)
             self.draw_path(path)
 
     def bfs(self, animate=False):
-        self.clear_path()
-        path = self.maze.bfs()
-        if path:
+        self.clear_visited_path()
+        visited_path = self.maze.bfs()
+        if visited_path:
+            path, visited = visited_path
+            if animate:
+                self.draw_path(visited, animate=True)
             self.draw_path(path)
 
     # Bind methods
