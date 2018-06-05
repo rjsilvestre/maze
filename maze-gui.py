@@ -137,21 +137,26 @@ class MazeGui(tk.Frame):
         self.maze_grid.tag_raise('grid_line')
         self.maze.update_walls((tile_x, tile_y))
 
-    def draw_path(self, path, animate=False):
-        fill_color = 'green' if animate else 'blue'
+    def draw_path(self, path):
         for tile in path:
             tile_x, tile_y = tile
             x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
-            if animate:
-                self.maze_grid.after(100)
-                self.visited[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
-                        x1, y1, x2, y2, fill=fill_color, outline='')
-                self.maze_grid.tag_raise('grid_line')
-                self.maze_grid.update()
-            else:
-                self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
-                        x1, y1, x2, y2, fill=fill_color, outline='')
+            self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
+                    x1, y1, x2, y2, fill='blue', outline='')
             self.maze_grid.tag_raise('grid_line')
+
+    def draw_visited_path(self, path, visited):
+        tile_x, tile_y = visited.pop(0)
+        x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
+        self.visited[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
+                x1, y1, x2, y2, fill='green', outline='')
+        self.maze_grid.tag_raise('grid_line')
+        if visited:
+            self.animation = self.after(100,
+                    lambda: self.draw_visited_path(path, visited))
+        else:
+            self.draw_path(path)
+
 
     def reset_grid(self):
         self.maze_grid.destroy()
@@ -178,8 +183,9 @@ class MazeGui(tk.Frame):
         if visited_path:
             path, visited = visited_path
             if animate:
-                self.draw_path(visited, animate=True)
-            self.draw_path(path)
+                self.draw_visited_path(path, visited)
+            else:
+                self.draw_path(path)
 
     def bfs(self, animate=False):
         self.clear_visited_path()
@@ -187,8 +193,9 @@ class MazeGui(tk.Frame):
         if visited_path:
             path, visited = visited_path
             if animate:
-                self.draw_path(visited, animate=True)
-            self.draw_path(path)
+                self.draw_visited_path(path, visited)
+            else:
+                self.draw_path(path)
 
     # Bind methods
     def press_tile(self, event):
