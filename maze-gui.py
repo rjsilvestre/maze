@@ -1,7 +1,7 @@
 import tkinter as tk
 import maze
 
-class MazeGui:
+class MazeGui(tk.Frame):
     """Main gui, contains the maze grid and the maze object. Allows to save,
     load and manipulate the mazes.
 
@@ -9,7 +9,7 @@ class MazeGui:
         master: Parent tkinter object to write the child gui objects on.
     """
     def __init__(self, master):
-        self.master = master
+        tk.Frame.__init__(self, master)
         self.line_width = 2
         self.tile_side = 50
         self.num_tiles = 15
@@ -19,13 +19,16 @@ class MazeGui:
         self.maze = maze.Maze(self.num_tiles, (1, 1), (goal_pos, goal_pos))
         self.tiles, self.path, self.visited = {}, {}, {}
 
+        # Packs the main frame
+        self.pack(padx=5, pady=5)
+
         # Build empty maze
         self.build_grid()
         self.build_border()
 
         # Buttons frame
-        self.btns_frame = tk.Frame(self.master)
-        self.btns_frame.pack(side=tk.BOTTOM, padx=5, pady=(0, 5))
+        self.btns_frame = tk.Frame(self)
+        self.btns_frame.pack(side=tk.BOTTOM, pady=(5, 0))
 
         # Buttons
         self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search',
@@ -53,9 +56,9 @@ class MazeGui:
     def build_grid(self):
         """Draws the grid lines on the maze_grid canvas.
         """
-        self.maze_grid = tk.Canvas(self.master, width=self.maze_dim, height=self.maze_dim,
+        self.maze_grid = tk.Canvas(self, width=self.maze_dim, height=self.maze_dim,
                 bg='white', highlightthickness=self.line_width, highlightbackground='black')
-        self.maze_grid.pack(padx=5, pady=5)
+        self.maze_grid.pack()
         for px in range(self.tile_side+self.line_width, self.maze_dim, self.tile_side):
             self.maze_grid.create_line((px, 0), (px, self.maze_dim+self.line_width),
                     width=self.line_width, tag='grid_line')
