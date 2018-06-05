@@ -53,17 +53,11 @@ class MazeGui(tk.Frame):
         # Event bindings
         self.set_binds()
 
-    def build_grid(self):
-        """Draws the grid lines on the maze_grid canvas.
-        """
-        self.maze_grid = tk.Canvas(self, width=self.maze_dim, height=self.maze_dim,
-                bg='white', highlightthickness=self.line_width, highlightbackground='black')
-        self.maze_grid.pack()
-        for px in range(self.tile_side+self.line_width, self.maze_dim, self.tile_side):
-            self.maze_grid.create_line((px, 0), (px, self.maze_dim+self.line_width),
-                    width=self.line_width, tag='grid_line')
-            self.maze_grid.create_line((0, px), (self.maze_dim+self.line_width, px),
-                    width=self.line_width, tag='grid_line')
+    def set_binds(self):
+        """Set the all the binds"""
+        self.maze_grid.bind('<Button-1>', self.press_tile)
+        self.maze_grid.bind('<B1-Motion>', self.update_toggle_pos)
+        self.maze_grid.bind('<ButtonRelease-1>', self.clear_toggle_pos)
 
     def cords_to_tile(self, x, y):
         """Calculates the position of a tile on the canvas grid from a x, y
@@ -98,10 +92,34 @@ class MazeGui(tk.Frame):
         y2 = (self.tile_side*tile_y) + self.tile_side + self.line_width
         return x1, y1, x2, y2
 
-    def set_binds(self):
-        self.maze_grid.bind('<Button-1>', self.press_tile)
-        self.maze_grid.bind('<B1-Motion>', self.update_toggle_pos)
-        self.maze_grid.bind('<ButtonRelease-1>', self.clear_toggle_pos)
+    def toggle_tile(self, tile_x, tile_y):
+        """Toggles the tile on the cursor position on the grid on or off.
+
+        Args:
+            tile_x: int, x coordinate of the tile on the grid.
+            tile_y: int, y coordinate of the tile on the grid.
+        """
+        if (tile_x, tile_y) in self.tiles:
+            self.maze_grid.delete(self.tiles[(tile_x, tile_y)])
+            del self.tiles[(tile_x, tile_y)]
+        else:
+            x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
+            self.tiles[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
+                    x1, y1, x2, y2, fill='red', outline='')
+        self.maze_grid.tag_raise('grid_line')
+        self.maze.update_walls((tile_x, tile_y))
+
+    def build_grid(self):
+        """Draws the grid lines on the maze_grid canvas.
+        """
+        self.maze_grid = tk.Canvas(self, width=self.maze_dim, height=self.maze_dim,
+                bg='white', highlightthickness=self.line_width, highlightbackground='black')
+        self.maze_grid.pack()
+        for px in range(self.tile_side+self.line_width, self.maze_dim, self.tile_side):
+            self.maze_grid.create_line((px, 0), (px, self.maze_dim+self.line_width),
+                    width=self.line_width, tag='grid_line')
+            self.maze_grid.create_line((0, px), (self.maze_dim+self.line_width, px),
+                    width=self.line_width, tag='grid_line')
 
     def build_border(self):
         """Creates maze tile outer wall border.
@@ -119,23 +137,6 @@ class MazeGui(tk.Frame):
             if self.cords_to_tile(last_tile, px0) not in self.tiles:
                 self.toggle_tile(*self.cords_to_tile(last_tile, px0))
         self.maze_grid.tag_raise('grid_line')
-
-    def toggle_tile(self, tile_x, tile_y):
-        """Toggles the tile on the cursor position on the grid on or off.
-
-        Args:
-            tile_x: int, x coordinate of the tile on the grid.
-            tile_y: int, y coordinate of the tile on the grid.
-        """
-        if (tile_x, tile_y) in self.tiles:
-            self.maze_grid.delete(self.tiles[(tile_x, tile_y)])
-            del self.tiles[(tile_x, tile_y)]
-        else:
-            x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
-            self.tiles[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
-                    x1, y1, x2, y2, fill='red', outline='')
-        self.maze_grid.tag_raise('grid_line')
-        self.maze.update_walls((tile_x, tile_y))
 
     def draw_path(self, path):
         for tile in path:
@@ -157,8 +158,11 @@ class MazeGui(tk.Frame):
         else:
             self.draw_path(path)
 
-
     def reset_grid(self):
+        """Reset the grids. Destroys the previous canvas object and resets all
+        the relevant attributes.
+        Rebuilds the canvas using the instance attributes.
+        """
         self.maze_grid.destroy()
         goal_pos = self.num_tiles - 2
         self.maze = maze.Maze(self.num_tiles, (1, 1), (goal_pos, goal_pos))
@@ -168,6 +172,7 @@ class MazeGui(tk.Frame):
         self.set_binds()
 
     def clear_visited_path(self):
+        """Deletes the path and visisted tiles. Resets the dictionaries."""
         for tile in list(self.path):
             tile_x, tile_y = tile
             self.maze_grid.delete(self.path[(tile_x, tile_y)])
@@ -176,8 +181,14 @@ class MazeGui(tk.Frame):
             self.maze_grid.delete(self.visited[(tile_x, tile_y)])
         self.path, self.visited = {}, {}
 
-    # Buttons methods
     def dfs(self, animate=False):
+        """Calls the depth first search maze algorithm and draws the path to the
+        goal and animates the search.
+
+        Args:
+            animate: bol, default=False. Animates the visited tiles during the
+                search.
+        """
         self.clear_visited_path()
         visited_path= self.maze.dfs()
         if visited_path:
@@ -188,6 +199,13 @@ class MazeGui(tk.Frame):
                 self.draw_path(path)
 
     def bfs(self, animate=False):
+        """Calls the breadth first search maze algorithm and draws the path to the
+        goal and animates the search.
+
+        Args:
+            animate: bol, default=False. Animates the visited tiles during the
+                search.
+        """
         self.clear_visited_path()
         visited_path = self.maze.bfs()
         if visited_path:
