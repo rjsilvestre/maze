@@ -138,25 +138,22 @@ class MazeGui(tk.Frame):
                 self.toggle_tile(*self.cords_to_tile(last_tile, px0))
         self.maze_grid.tag_raise('grid_line')
 
-    def draw_path(self, path):
-        for tile in path:
-            tile_x, tile_y = tile
-            x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
-            self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
-                    x1, y1, x2, y2, fill='blue', outline='')
-            self.maze_grid.tag_raise('grid_line')
-
-    def draw_visited_path(self, path, visited):
-        tile_x, tile_y = visited.pop(0)
-        x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
-        self.visited[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
-                x1, y1, x2, y2, fill='green', outline='')
-        self.maze_grid.tag_raise('grid_line')
+    def draw_visited_path(self, path, visited=None):
         if visited:
+            tile_x, tile_y = visited.pop(0)
+            x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
+            self.visited[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
+                    x1, y1, x2, y2, fill='green', outline='')
+            self.maze_grid.tag_raise('grid_line')
             self.animation = self.after(100,
                     lambda: self.draw_visited_path(path, visited))
         else:
-            self.draw_path(path)
+            for tile in path:
+                tile_x, tile_y = tile
+                x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
+                self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
+                        x1, y1, x2, y2, fill='blue', outline='')
+                self.maze_grid.tag_raise('grid_line')
 
     def reset_grid(self):
         """Reset the grids. Destroys the previous canvas object and resets all
@@ -196,7 +193,7 @@ class MazeGui(tk.Frame):
             if animate:
                 self.draw_visited_path(path, visited)
             else:
-                self.draw_path(path)
+                self.draw_visited_path(path)
 
     # Bind methods
     def press_tile(self, event):
