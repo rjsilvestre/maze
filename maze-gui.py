@@ -32,13 +32,13 @@ class MazeGui(tk.Frame):
 
         # Buttons
         self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search',
-                command=self.dfs)
+                command=lambda: self.search_path(self.maze.dfs))
         self.btn_dfs_anim = tk.Button(self.btns_frame, text='DFS Animated',
-                command=lambda: self.dfs(animate=True))
+                command=lambda: self.search_path(self.maze.dfs, animate=True))
         self.btn_bfs = tk.Button(self.btns_frame, text='Breadth First Search',
-                command=self.bfs)
+                command=lambda: self.search_path(self.maze.bfs))
         self.btn_bfs_anim = tk.Button(self.btns_frame, text='BFS Animated',
-                command=lambda: self.bfs(animate=True))
+                command=lambda: self.search_path(self.maze.bfs, animate=True))
         self.btn_clr_visited_path = tk.Button(self.btns_frame, text='Clear Path',
                 command=self.clear_visited_path)
         self.btn_reset_grid = tk.Button(self.btns_frame, text='Reset',
@@ -181,33 +181,16 @@ class MazeGui(tk.Frame):
             self.maze_grid.delete(self.visited[(tile_x, tile_y)])
         self.path, self.visited = {}, {}
 
-    def dfs(self, animate=False):
-        """Calls the depth first search maze algorithm and draws the path to the
-        goal and animates the search.
+    def search_path(self, search_func, animate=False):
+        """Calls a search maze algorithm and draws the path to the goal and
+        animates the search.
 
         Args:
             animate: bol, default=False. Animates the visited tiles during the
                 search.
         """
         self.clear_visited_path()
-        visited_path= self.maze.dfs()
-        if visited_path:
-            path, visited = visited_path
-            if animate:
-                self.draw_visited_path(path, visited)
-            else:
-                self.draw_path(path)
-
-    def bfs(self, animate=False):
-        """Calls the breadth first search maze algorithm and draws the path to the
-        goal and animates the search.
-
-        Args:
-            animate: bol, default=False. Animates the visited tiles during the
-                search.
-        """
-        self.clear_visited_path()
-        visited_path = self.maze.bfs()
+        visited_path= search_func()
         if visited_path:
             path, visited = visited_path
             if animate:
