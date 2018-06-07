@@ -206,7 +206,7 @@ class MazeGui(tk.Frame):
                 search.
         """
         self.clear_visited_path()
-        visited_path= search_func()
+        visited_path = search_func()
         if visited_path:
             path, visited = visited_path
             if animate:
