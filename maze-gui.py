@@ -15,6 +15,7 @@ class MazeGui(tk.Frame):
         self.num_tiles = 15
         self.maze_dim = self.num_tiles * self.tile_side
         self.toggle_pos = None
+        self.animation = None
         goal_pos = self.num_tiles - 2
         self.maze = maze.Maze(self.num_tiles, (1, 1), (goal_pos, goal_pos))
         self.tiles, self.path, self.visited = {}, {}, {}
@@ -58,6 +59,20 @@ class MazeGui(tk.Frame):
         self.maze_grid.bind('<Button-1>', self.press_tile)
         self.maze_grid.bind('<B1-Motion>', self.update_toggle_pos)
         self.maze_grid.bind('<ButtonRelease-1>', self.clear_toggle_pos)
+
+    def cancel_animation(func):
+        def cancel(self, *args, **kargs):
+            if self.animation:
+                self.after_cancel(self.animation)
+                self.animation = None
+            func(self, *args, **kargs)
+        return cancel
+
+    def animation_lock(func):
+        def lock(self, *args, **kargs):
+            if not self.animation:
+                func(self, *args, **kargs)
+        return lock
 
     def cords_to_tile(self, x, y):
         """Calculates the position of a tile on the canvas grid from a x, y
@@ -148,6 +163,7 @@ class MazeGui(tk.Frame):
             self.animation = self.after(100,
                     lambda: self.draw_visited_path(path, visited))
         else:
+            self.animation = None
             for tile in path:
                 tile_x, tile_y = tile
                 x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
@@ -155,6 +171,7 @@ class MazeGui(tk.Frame):
                         x1, y1, x2, y2, fill='blue', outline='')
                 self.maze_grid.tag_raise('grid_line')
 
+    @cancel_animation
     def reset_grid(self):
         """Reset the grids. Destroys the previous canvas object and resets all
         the relevant attributes.
@@ -168,6 +185,7 @@ class MazeGui(tk.Frame):
         self.build_border()
         self.set_binds()
 
+    @cancel_animation
     def clear_visited_path(self):
         """Deletes the path and visisted tiles. Resets the dictionaries."""
         for tile in list(self.path):
@@ -178,6 +196,7 @@ class MazeGui(tk.Frame):
             self.maze_grid.delete(self.visited[(tile_x, tile_y)])
         self.path, self.visited = {}, {}
 
+    @cancel_animation
     def search_path(self, search_func, animate=False):
         """Calls a search maze algorithm and draws the path to the goal and
         animates the search.
@@ -196,6 +215,7 @@ class MazeGui(tk.Frame):
                 self.draw_visited_path(path)
 
     # Bind methods
+    @animation_lock
     def press_tile(self, event):
         """Calls the toggle_tile function if it the pressed tile is not on the edge.
         Bind of <Button1> event, or called by the update_toggle_pos function.
@@ -208,6 +228,7 @@ class MazeGui(tk.Frame):
         if 0 < tile_x < self.num_tiles-1 and 0 < tile_y < self.num_tiles-1:
             self.toggle_tile(tile_x, tile_y)
 
+    @animation_lock
     def update_toggle_pos(self, event):
         """Updates the toggle_pos attribute and calls toggle_tile function if
         the coordinate changes while the mouse button1 is pressed. Bind of
@@ -221,6 +242,7 @@ class MazeGui(tk.Frame):
             self.toggle_pos = (tile_x, tile_y)
             self.press_tile(event)
 
+    @animation_lock
     def clear_toggle_pos(self, event):
         """Clears the toggle_pos attribute setting it with the None value.
         Bind of <ButtonRelease-1> event.
