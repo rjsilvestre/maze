@@ -68,7 +68,7 @@ class MazeGui(tk.Frame):
             func(self, *args, **kargs)
         return cancel
 
-    def animation_lock(func):
+    def lock_animation(func):
         def lock(self, *args, **kargs):
             if not self.animation:
                 func(self, *args, **kargs)
@@ -215,7 +215,7 @@ class MazeGui(tk.Frame):
                 self.draw_visited_path(path)
 
     # Bind methods
-    @animation_lock
+    @lock_animation
     def press_tile(self, event):
         """Calls the toggle_tile function if it the pressed tile is not on the edge.
         Bind of <Button1> event, or called by the update_toggle_pos function.
@@ -228,7 +228,7 @@ class MazeGui(tk.Frame):
         if 0 < tile_x < self.num_tiles-1 and 0 < tile_y < self.num_tiles-1:
             self.toggle_tile(tile_x, tile_y)
 
-    @animation_lock
+    @lock_animation
     def update_toggle_pos(self, event):
         """Updates the toggle_pos attribute and calls toggle_tile function if
         the coordinate changes while the mouse button1 is pressed. Bind of
@@ -242,7 +242,7 @@ class MazeGui(tk.Frame):
             self.toggle_pos = (tile_x, tile_y)
             self.press_tile(event)
 
-    @animation_lock
+    @lock_animation
     def clear_toggle_pos(self, event):
         """Clears the toggle_pos attribute setting it with the None value.
         Bind of <ButtonRelease-1> event.
