@@ -119,8 +119,7 @@ class MazeGui(tk.Frame):
         self.maze.update_walls((tile_x, tile_y))
 
     def build_grid(self):
-        """Draws the grid lines on the maze_grid canvas.
-        """
+        """Draws the grid lines on the maze_grid canvas."""
         self.maze_grid = tk.Canvas(self, width=self.maze_dim, height=self.maze_dim,
                 bg='white', highlightthickness=self.line_width, highlightbackground='black')
         self.maze_grid.pack()
@@ -131,8 +130,7 @@ class MazeGui(tk.Frame):
                     width=self.line_width, tag='grid_line')
 
     def build_border(self):
-        """Creates maze tile outer wall border.
-        """
+        """Creates maze tile outer wall border."""
         exp_tile = self.tile_side + self.line_width
         last_tile = self.tile_side * (self.num_tiles-1) + self.line_width
         for px0 in range(self.line_width, self.maze_dim+1, self.tile_side):
@@ -148,11 +146,19 @@ class MazeGui(tk.Frame):
         self.maze_grid.tag_raise('grid_line')
 
     def create_maze(self):
+        """Calculates the default start and goal and creates a new maze object.
+        """
         start = (1, 1)
         goal = (self.num_tiles-2, self.num_tiles-2)
         self.maze = maze.Maze(self.num_tiles, start, goal)
 
     def draw_ends(self, start, goal):
+        """Draws the start and goal markers on the grid
+
+        Args:
+            start: tuple, the start position tile.
+            goal: tuple, the goal position tile.
+        """
         for end in ['start', 'goal']:
             tile_x, tile_y = eval(end)
             x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
@@ -162,6 +168,14 @@ class MazeGui(tk.Frame):
                 justify=tk.CENTER, font=("Helvetica", 18, "bold"), tag='end'))
 
     def draw_visited_path(self, path, visited=None):
+        """Draws the visited tiles on the search and the final path. The visited
+        is drawing is animated and is optional.
+
+        Args:
+            path: list, the list of the tiles of the final path.
+            visited list, default=None the list of the visited tiles while searching
+                for a path.
+        """
         if visited:
             tile_x, tile_y = visited.pop(0)
             x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
@@ -188,8 +202,8 @@ class MazeGui(tk.Frame):
         """
         if hasattr(self, 'maze_grid'):
             self.maze_grid.destroy()
-        self.create_maze()
         self.tiles, self.path, self.visited = {}, {}, {}
+        self.create_maze()
         self.build_grid()
         self.build_border()
         self.draw_ends(self.maze.start, self.maze.goal)
