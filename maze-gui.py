@@ -227,16 +227,19 @@ class MazeGui(tk.Frame):
     # Bind methods
     @lock_animation
     def press_tile(self, event):
-        """Calls the toggle_tile function if it the pressed tile is not on the edge.
+        """Calls the toggle_tile function if it the pressed tile is not on the
+        edge or one of the ends of the path.
         Bind of <Button1> event, or called by the update_toggle_pos function.
 
         Args:
             event: The event object of the bind
         """
-        tile_x, tile_y = self.cords_to_tile(event.x, event.y)
-        self.toggle_pos = (tile_x, tile_y)
+        tile = self.cords_to_tile(event.x, event.y)
+        tile_x, tile_y = tile
+        self.toggle_pos = tile
         if 0 < tile_x < self.num_tiles-1 and 0 < tile_y < self.num_tiles-1:
-            self.toggle_tile(tile_x, tile_y)
+            if tile != self.maze.start and tile != self.maze.goal:
+                self.toggle_tile(tile_x, tile_y)
 
     @lock_animation
     def update_toggle_pos(self, event):
