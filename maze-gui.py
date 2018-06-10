@@ -16,16 +16,13 @@ class MazeGui(tk.Frame):
         self.maze_dim = self.num_tiles * self.tile_side
         self.toggle_pos = None
         self.animation = None
-        goal_pos = self.num_tiles - 2
-        self.maze = maze.Maze(self.num_tiles, (1, 1), (goal_pos, goal_pos))
         self.tiles, self.path, self.visited = {}, {}, {}
 
         # Packs the main frame
         self.pack(padx=5, pady=5)
 
-        # Build empty maze
-        self.build_grid()
-        self.build_border()
+        # Creates a grid
+        self.create_grid()
 
         # Buttons frame
         self.btns_frame = tk.Frame(self)
@@ -43,16 +40,13 @@ class MazeGui(tk.Frame):
         self.btn_clr_visited_path = tk.Button(self.btns_frame, text='Clear Path',
                 command=self.clear_visited_path)
         self.btn_reset_grid = tk.Button(self.btns_frame, text='Reset',
-                command=self.reset_grid)
+                command=self.create_grid)
         self.btn_dfs.grid(row=0, column=0)
         self.btn_dfs_anim.grid(row=0, column=1)
         self.btn_bfs.grid(row=1, column=0)
         self.btn_bfs_anim.grid(row=1, column=1)
         self.btn_clr_visited_path.grid(row=2, column=0)
         self.btn_reset_grid.grid(row=2, column=1)
-
-        # Event bindings
-        self.set_binds()
 
     def set_binds(self):
         """Set the all the binds"""
@@ -153,6 +147,20 @@ class MazeGui(tk.Frame):
                 self.toggle_tile(*self.cords_to_tile(last_tile, px0))
         self.maze_grid.tag_raise('grid_line')
 
+    def create_maze(self):
+        start = (1, 1)
+        goal = (self.num_tiles-2, self.num_tiles-2)
+        self.maze = maze.Maze(self.num_tiles, start, goal)
+
+    def draw_ends(self, start, goal):
+        for end in ['start', 'goal']:
+            tile_x, tile_y = eval(end)
+            x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
+            x = (x1+x2) / 2
+            y = (y1+y2) / 2
+            setattr(self, end, self.maze_grid.create_text(x, y, text=end[0],
+                justify=tk.CENTER, font=("Helvetica", 18, "bold"), tag='end'))
+
     def draw_visited_path(self, path, visited=None):
         if visited:
             tile_x, tile_y = visited.pop(0)
@@ -170,19 +178,21 @@ class MazeGui(tk.Frame):
                 self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
                         x1, y1, x2, y2, fill='blue', outline='')
                 self.maze_grid.tag_raise('grid_line')
+        self.maze_grid.tag_raise('end')
 
     @cancel_animation
-    def reset_grid(self):
-        """Reset the grids. Destroys the previous canvas object and resets all
-        the relevant attributes.
-        Rebuilds the canvas using the instance attributes.
+    def create_grid(self):
+        """Creates the grids. Destroys the previous grid canvas object if exists
+        and resets all the relevant attributes.
+        Builds the canvas using the instance attributes.
         """
-        self.maze_grid.destroy()
-        goal_pos = self.num_tiles - 2
-        self.maze = maze.Maze(self.num_tiles, (1, 1), (goal_pos, goal_pos))
+        if hasattr(self, 'maze_grid'):
+            self.maze_grid.destroy()
+        self.create_maze()
         self.tiles, self.path, self.visited = {}, {}, {}
         self.build_grid()
         self.build_border()
+        self.draw_ends(self.maze.start, self.maze.goal)
         self.set_binds()
 
     @cancel_animation
