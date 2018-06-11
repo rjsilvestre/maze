@@ -118,7 +118,14 @@ class MazeGui(tk.Frame):
         self.maze_grid.tag_raise('grid_line')
         self.maze.update_walls((tile_x, tile_y))
 
-    def build_grid(self):
+    def create_maze(self):
+        """Calculates the default start and goal and creates a new maze object.
+        """
+        start = (1, 1)
+        goal = (self.num_tiles-2, self.num_tiles-2)
+        self.maze = maze.Maze(self.num_tiles, start, goal)
+
+    def draw_grid(self):
         """Draws the grid lines on the maze_grid canvas."""
         self.maze_grid = tk.Canvas(self, width=self.maze_dim, height=self.maze_dim,
                 bg='white', highlightthickness=self.line_width, highlightbackground='black')
@@ -129,7 +136,7 @@ class MazeGui(tk.Frame):
             self.maze_grid.create_line((0, px), (self.maze_dim+self.line_width, px),
                     width=self.line_width, tag='grid_line')
 
-    def build_border(self):
+    def draw_border(self):
         """Creates maze tile outer wall border."""
         exp_tile = self.tile_side + self.line_width
         last_tile = self.tile_side * (self.num_tiles-1) + self.line_width
@@ -144,13 +151,6 @@ class MazeGui(tk.Frame):
             if self.cords_to_tile(last_tile, px0) not in self.tiles:
                 self.toggle_tile(*self.cords_to_tile(last_tile, px0))
         self.maze_grid.tag_raise('grid_line')
-
-    def create_maze(self):
-        """Calculates the default start and goal and creates a new maze object.
-        """
-        start = (1, 1)
-        goal = (self.num_tiles-2, self.num_tiles-2)
-        self.maze = maze.Maze(self.num_tiles, start, goal)
 
     def draw_ends(self, start, goal):
         """Draws the start and goal markers on the grid
@@ -204,8 +204,8 @@ class MazeGui(tk.Frame):
             self.maze_grid.destroy()
         self.tiles, self.path, self.visited = {}, {}, {}
         self.create_maze()
-        self.build_grid()
-        self.build_border()
+        self.draw_grid()
+        self.draw_border()
         self.draw_ends(self.maze.start, self.maze.goal)
         self.set_binds()
 
