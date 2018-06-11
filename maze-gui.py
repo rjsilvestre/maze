@@ -84,39 +84,38 @@ class MazeGui(tk.Frame):
         tile_y = int(y // (self.tile_side + (half_line_width/self.num_tiles)))
         return tile_x, tile_y
 
-    def tile_to_cords(self, tile_x, tile_y):
+    def tile_to_cords(self, tile):
         """Calculates the coordinates of the left top and botton right edges of
         a tile on the canvas.
 
         Args:
-            x: int, x position of the tile.
-            y: int, y position of the tile.
+            tile: tuple, with x, y ints as position of the tile
 
         Returns:
             tuple, with the x1, y1, x2, y2 coordinates of the edges on the canvas.
         """
+        tile_x, tile_y = tile
         x1 = (self.tile_side*tile_x) + self.line_width
         y1 = (self.tile_side*tile_y) + self.line_width
         x2 = (self.tile_side*tile_x) + self.tile_side + self.line_width
         y2 = (self.tile_side*tile_y) + self.tile_side + self.line_width
         return x1, y1, x2, y2
 
-    def toggle_tile(self, tile_x, tile_y):
+    def toggle_tile(self, tile):
         """Toggles the tile on the cursor position on the grid on or off.
 
         Args:
-            tile_x: int, x coordinate of the tile on the grid.
-            tile_y: int, y coordinate of the tile on the grid.
+            tile: tuple, with x, y ints as position of the tile
         """
-        if (tile_x, tile_y) in self.tiles:
-            self.maze_grid.delete(self.tiles[(tile_x, tile_y)])
-            del self.tiles[(tile_x, tile_y)]
+        if tile in self.tiles:
+            self.maze_grid.delete(self.tiles[tile])
+            del self.tiles[tile]
         else:
-            x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
-            self.tiles[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
-                    x1, y1, x2, y2, fill='red', outline='')
+            x1, y1, x2, y2 = self.tile_to_cords(tile)
+            self.tiles[tile] = self.maze_grid.create_rectangle(x1, y1, x2, y2,
+                    fill='red', outline='')
         self.maze_grid.tag_raise('grid_line')
-        self.maze.update_walls((tile_x, tile_y))
+        self.maze.update_walls(tile)
 
     def create_maze(self):
         """Calculates the default start and goal and creates a new maze object.
@@ -143,13 +142,13 @@ class MazeGui(tk.Frame):
         for px0 in range(self.line_width, self.maze_dim+1, self.tile_side):
             px1 = px0 + exp_tile
             if self.cords_to_tile(px0, 0) not in self.tiles:
-                self.toggle_tile(*self.cords_to_tile(px0, 0))
+                self.toggle_tile(self.cords_to_tile(px0, 0))
             if self.cords_to_tile(px0, last_tile) not in self.tiles:
-                self.toggle_tile(*self.cords_to_tile(px0, last_tile))
+                self.toggle_tile(self.cords_to_tile(px0, last_tile))
             if self.cords_to_tile(0, px0) not in self.tiles:
-                self.toggle_tile(*self.cords_to_tile(0, px0))
+                self.toggle_tile(self.cords_to_tile(0, px0))
             if self.cords_to_tile(last_tile, px0) not in self.tiles:
-                self.toggle_tile(*self.cords_to_tile(last_tile, px0))
+                self.toggle_tile(self.cords_to_tile(last_tile, px0))
         self.maze_grid.tag_raise('grid_line')
 
     def draw_ends(self, start, goal):
@@ -160,8 +159,8 @@ class MazeGui(tk.Frame):
             goal: tuple, the goal position tile.
         """
         for end in ['start', 'goal']:
-            tile_x, tile_y = eval(end)
-            x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
+            tile = eval(end)
+            x1, y1, x2, y2 = self.tile_to_cords(tile)
             x = (x1+x2) / 2
             y = (y1+y2) / 2
             setattr(self, end, self.maze_grid.create_text(x, y, text=end[0],
@@ -177,20 +176,19 @@ class MazeGui(tk.Frame):
                 for a path.
         """
         if visited:
-            tile_x, tile_y = visited.pop(0)
-            x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
-            self.visited[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
-                    x1, y1, x2, y2, fill='green', outline='')
+            tile = visited.pop(0)
+            x1, y1, x2, y2 = self.tile_to_cords(tile)
+            self.visited[(tile)] = self.maze_grid.create_rectangle(x1, y1, x2, y2,
+                    fill='green', outline='')
             self.maze_grid.tag_raise('grid_line')
             self.animation = self.after(100,
                     lambda: self.draw_visited_path(path, visited))
         else:
             self.animation = None
             for tile in path:
-                tile_x, tile_y = tile
-                x1, y1, x2, y2 = self.tile_to_cords(tile_x, tile_y)
-                self.path[(tile_x, tile_y)] = self.maze_grid.create_rectangle(
-                        x1, y1, x2, y2, fill='blue', outline='')
+                x1, y1, x2, y2 = self.tile_to_cords(tile)
+                self.path[(tile)] = self.maze_grid.create_rectangle(x1, y1, x2, y2,
+                        fill='blue', outline='')
                 self.maze_grid.tag_raise('grid_line')
         self.maze_grid.tag_raise('end')
 
@@ -253,11 +251,11 @@ class MazeGui(tk.Frame):
         self.toggle_pos = tile
         if 0 < tile_x < self.num_tiles-1 and 0 < tile_y < self.num_tiles-1:
             if tile != self.maze.start and tile != self.maze.goal:
-                self.toggle_tile(tile_x, tile_y)
+                self.toggle_tile(tile)
 
     @lock_animation
     def update_toggle_pos(self, event):
-        """Updates the toggle_pos attribute and calls toggle_tile function if
+        """Updates the toggle_pos attribute and calls press_tile function if
         the coordinate changes while the mouse button1 is pressed. Bind of
         <B1-Motion> event.
 
