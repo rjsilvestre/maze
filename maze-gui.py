@@ -22,7 +22,7 @@ class MazeGui(tk.Frame):
         self.pack(padx=5, pady=5)
 
         # Creates a grid
-        self.create_grid()
+        self.new_grid()
 
         # Buttons frame
         self.btns_frame = tk.Frame(self)
@@ -40,7 +40,7 @@ class MazeGui(tk.Frame):
         self.btn_clr_visited_path = tk.Button(self.btns_frame, text='Clear Path',
                 command=self.clear_visited_path)
         self.btn_reset_grid = tk.Button(self.btns_frame, text='Reset',
-                command=self.create_grid)
+                command=self.new_grid)
         self.btn_dfs.grid(row=0, column=0)
         self.btn_dfs_anim.grid(row=0, column=1)
         self.btn_bfs.grid(row=1, column=0)
@@ -193,8 +193,8 @@ class MazeGui(tk.Frame):
         self.maze_grid.tag_raise('end')
 
     @cancel_animation
-    def create_grid(self):
-        """Creates the grids. Destroys the previous grid canvas object if exists
+    def new_grid(self):
+        """Creates a new grid. Destroys the previous grid canvas object if exists
         and resets all the relevant attributes.
         Builds the canvas using the instance attributes.
         """
