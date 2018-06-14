@@ -37,6 +37,10 @@ class MazeGui(tk.Frame):
                 command=lambda: self.search_path(self.maze.bfs))
         self.btn_bfs_anim = tk.Button(self.btns_frame, text='BFS Animated',
                 command=lambda: self.search_path(self.maze.bfs, animate=True))
+        self.btn_set_start = tk.Button(self.btns_frame, text='Set Start',
+                command=lambda: self.set_ends_bind('start'))
+        self.btn_set_goal = tk.Button(self.btns_frame, text='Set Goal',
+                command=lambda: self.set_ends_bind('goal'))
         self.btn_clr_visited_path = tk.Button(self.btns_frame, text='Clear Path',
                 command=self.clear_visited_path)
         self.btn_reset_grid = tk.Button(self.btns_frame, text='Reset',
@@ -45,8 +49,10 @@ class MazeGui(tk.Frame):
         self.btn_dfs_anim.grid(row=0, column=1)
         self.btn_bfs.grid(row=1, column=0)
         self.btn_bfs_anim.grid(row=1, column=1)
-        self.btn_clr_visited_path.grid(row=2, column=0)
-        self.btn_reset_grid.grid(row=2, column=1)
+        self.btn_set_start.grid(row=2, column=0)
+        self.btn_set_goal.grid(row=2, column=1)
+        self.btn_clr_visited_path.grid(row=3, column=0)
+        self.btn_reset_grid.grid(row=3, column=1)
 
     def set_binds(self):
         """Set the all the binds"""
@@ -235,6 +241,13 @@ class MazeGui(tk.Frame):
             else:
                 self.draw_visited_path(path)
 
+    def set_ends_bind(self, end):
+        self.clear_visited_path()
+        self.maze_grid.unbind('<Button-1>')
+        self.maze_grid.unbind('<B1-Motion>')
+        self.maze_grid.unbind('<ButtonRelease-1>')
+        self.maze_grid.bind('<Button-1>', lambda event: self.set_end(event, end))
+
     # Bind methods
     @lock_animation
     def press_tile(self, event):
@@ -275,6 +288,23 @@ class MazeGui(tk.Frame):
             event: The event object of the bind.
         """
         self.toggle_pos = None
+
+    def set_end(self, event, end):
+        new_end = self.cords_to_tile(event.x, event.y)
+        new_end_x, new_end_y = new_end
+        if ((new_end_x == 1 or new_end_x == self.num_tiles - 2) or
+                (new_end_y == 1 or new_end_y == self.num_tiles - 2)):
+            if (end == 'start' and new_end != self.maze.goal):
+                self.maze_grid.delete(self.start)
+                self.maze.start = new_end
+                self.draw_ends(start=new_end)
+            elif (end == 'goal' and new_end != self.maze.start):
+                self.maze_grid.delete(self.goal)
+                self.maze.goal = new_end
+                self.draw_ends(goal=new_end)
+            if new_end in self.tiles:
+                self.toggle_tile(new_end)
+        self.set_binds()
 
 if __name__ == '__main__':
     root = tk.Tk()
