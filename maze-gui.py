@@ -212,11 +212,9 @@ class MazeGui(tk.Frame):
     def clear_visited_path(self):
         """Deletes the path and visisted tiles. Resets the dictionaries."""
         for tile in list(self.path):
-            tile_x, tile_y = tile
-            self.maze_grid.delete(self.path[(tile_x, tile_y)])
+            self.maze_grid.delete(self.path[tile])
         for tile in list(self.visited):
-            tile_x, tile_y = tile
-            self.maze_grid.delete(self.visited[(tile_x, tile_y)])
+            self.maze_grid.delete(self.visited[tile])
         self.path, self.visited = {}, {}
 
     @cancel_animation
