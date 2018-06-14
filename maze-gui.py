@@ -151,7 +151,7 @@ class MazeGui(tk.Frame):
                 self.toggle_tile(self.cords_to_tile(last_tile, px0))
         self.maze_grid.tag_raise('grid_line')
 
-    def draw_ends(self, start, goal):
+    def draw_ends(self, start=None, goal=None):
         """Draws the start and goal markers on the grid
 
         Args:
@@ -160,11 +160,12 @@ class MazeGui(tk.Frame):
         """
         for end in ['start', 'goal']:
             tile = eval(end)
-            x1, y1, x2, y2 = self.tile_to_cords(tile)
-            x = (x1+x2) / 2
-            y = (y1+y2) / 2
-            setattr(self, end, self.maze_grid.create_text(x, y, text=end[0],
-                justify=tk.CENTER, font=("Helvetica", 18, "bold"), tag='end'))
+            if tile:
+                x1, y1, x2, y2 = self.tile_to_cords(tile)
+                x = (x1+x2) / 2
+                y = (y1+y2) / 2
+                setattr(self, end, self.maze_grid.create_text(x, y, text=end[0],
+                    justify=tk.CENTER, font=("Helvetica", 18, "bold"), tag='end'))
 
     def draw_visited_path(self, path, visited=None):
         """Draws the visited tiles on the search and the final path. The visited
