@@ -152,7 +152,8 @@ class MazeGui(tk.Frame):
         self.maze_grid.tag_raise('grid_line')
 
     def draw_ends(self, start=None, goal=None):
-        """Draws the start and goal markers on the grid
+        """Draws the start and goal markers on the grid. Can draw both or only
+        one.
 
         Args:
             start: tuple, the start position tile.
