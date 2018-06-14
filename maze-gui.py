@@ -217,7 +217,6 @@ class MazeGui(tk.Frame):
             self.maze_grid.delete(self.visited[tile])
         self.path, self.visited = {}, {}
 
-    @cancel_animation
     def search_path(self, search_func, animate=False):
         """Calls a search maze algorithm and draws the path to the goal and
         animates the search.
