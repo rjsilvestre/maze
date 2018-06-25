@@ -26,12 +26,16 @@ class MazeGui(tk.Frame):
         self.new_grid()
 
         # Buttons frames
-        self.btnsmz_frame = tk.LabelFrame(self, text='maze', padx=10, pady=10)
+        self.btns_frame = tk.Frame(self)
+        self.btnsmz_frame = tk.LabelFrame(self.btns_frame, text='maze', padx=10,
+                pady=10)
+        self.btnspf_frame = tk.LabelFrame(self.btns_frame, text='pathfind', padx=10,
+                pady=10)
+        self.btns_frame.pack(side=tk.BOTTOM, fill='x', expand='yes')
         self.btnsmz_frame.pack(side=tk.LEFT, fill='x', expand='yes', padx=(0, 5),
-                pady=10)
-        self.btnspf_frame = tk.LabelFrame(self, text='pathfind', padx=10, pady=10)
+                pady=(10, 0))
         self.btnspf_frame.pack(side=tk.LEFT, fill='x', expand='yes', padx=(5, 0),
-                pady=10)
+                pady=(10, 0))
 
         # Buttons
         self.btnsmz_frame.grid_columnconfigure(0, weight=1)
