@@ -24,35 +24,45 @@ class MazeGui(tk.Frame):
         # Creates a grid
         self.new_grid()
 
-        # Buttons frame
-        self.btns_frame = tk.Frame(self)
-        self.btns_frame.pack(side=tk.BOTTOM, pady=(5, 0))
+        # Buttons frames
+        self.btnsmz_frame = tk.LabelFrame(self, text='maze', padx=10, pady=10)
+        self.btnsmz_frame.pack(side=tk.LEFT, fill='x', expand='yes', padx=(0, 5),
+                pady=10)
+        self.btnspf_frame = tk.LabelFrame(self, text='pathfind', padx=10, pady=10)
+        self.btnspf_frame.pack(side=tk.LEFT, fill='x', expand='yes', padx=(5, 0),
+                pady=10)
 
         # Buttons
-        self.btn_dfs = tk.Button(self.btns_frame, text='Depth First Search',
-                command=lambda: self.search_path(self.maze.dfs))
-        self.btn_dfs_anim = tk.Button(self.btns_frame, text='DFS Animated',
-                command=lambda: self.search_path(self.maze.dfs, animate=True))
-        self.btn_bfs = tk.Button(self.btns_frame, text='Breadth First Search',
-                command=lambda: self.search_path(self.maze.bfs))
-        self.btn_bfs_anim = tk.Button(self.btns_frame, text='BFS Animated',
-                command=lambda: self.search_path(self.maze.bfs, animate=True))
-        self.btn_set_start = tk.Button(self.btns_frame, text='Set Start',
-                command=lambda: self.set_ends_bind('start'))
-        self.btn_set_goal = tk.Button(self.btns_frame, text='Set Goal',
-                command=lambda: self.set_ends_bind('goal'))
-        self.btn_clr_visited_path = tk.Button(self.btns_frame, text='Clear Path',
-                command=self.clear_visited_path)
-        self.btn_reset_grid = tk.Button(self.btns_frame, text='Reset',
-                command=self.new_grid)
-        self.btn_dfs.grid(row=0, column=0)
-        self.btn_dfs_anim.grid(row=0, column=1)
-        self.btn_bfs.grid(row=1, column=0)
-        self.btn_bfs_anim.grid(row=1, column=1)
-        self.btn_set_start.grid(row=2, column=0)
-        self.btn_set_goal.grid(row=2, column=1)
-        self.btn_clr_visited_path.grid(row=3, column=0)
-        self.btn_reset_grid.grid(row=3, column=1)
+        self.btnsmz_frame.grid_columnconfigure(0, weight=1)
+        self.btnsmz_frame.grid_columnconfigure(1, weight=1)
+        self.btnspf_frame.grid_columnconfigure(0, weight=1)
+        self.btnspf_frame.grid_columnconfigure(1, weight=1)
+        self.btn_dfs = tk.Button(self.btnspf_frame, text='Depth First Search',
+                command=lambda: self.search_path(self.maze.dfs), width=self.btn_width)
+        self.btn_dfs_anim = tk.Button(self.btnspf_frame, text='DFS Animated',
+                command=lambda: self.search_path(self.maze.dfs, animate=True),
+                width=self.btn_width)
+        self.btn_bfs = tk.Button(self.btnspf_frame, text='Breadth First Search',
+                command=lambda: self.search_path(self.maze.bfs), width=self.btn_width)
+        self.btn_bfs_anim = tk.Button(self.btnspf_frame, text='BFS Animated',
+                command=lambda: self.search_path(self.maze.bfs, animate=True),
+                width=self.btn_width)
+        self.btn_set_start = tk.Button(self.btnsmz_frame, text='Set Start',
+                command=lambda: self.set_ends_bind('start'), width=self.btn_width)
+        self.btn_set_goal = tk.Button(self.btnsmz_frame, text='Set Goal',
+                command=lambda: self.set_ends_bind('goal'), width=self.btn_width)
+        self.btn_clr_visited_path = tk.Button(self.btnsmz_frame, text='Clear Path',
+                command=self.clear_visited_path, width=self.btn_width)
+        self.btn_reset_grid = tk.Button(self.btnsmz_frame, text='Reset',
+                command=self.new_grid, width=self.btn_width)
+        self.btn_dfs.grid(row=0, column=0, sticky=tk.E)
+        self.btn_dfs_anim.grid(row=0, column=1, sticky=tk.W)
+        self.btn_bfs.grid(row=1, column=0, sticky=tk.E)
+        self.btn_bfs_anim.grid(row=1, column=1, sticky=tk.W)
+        self.btn_set_start.grid(row=2, column=0, sticky=tk.E)
+        self.btn_set_goal.grid(row=2, column=1, sticky=tk.W)
+        self.btn_clr_visited_path.grid(row=3, column=0, sticky=tk.E)
+        self.btn_reset_grid.grid(row=3, column=1, sticky=tk.W)
 
     def set_binds(self):
         """Set the all the binds"""
