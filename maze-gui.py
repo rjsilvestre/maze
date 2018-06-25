@@ -13,6 +13,7 @@ class MazeGui(tk.Frame):
         self.line_width = 2
         self.tile_side = 50
         self.num_tiles = 15
+        self.btn_width = 15
         self.maze_dim = self.num_tiles * self.tile_side
         self.toggle_pos = None
         self.animation = None
